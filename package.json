@@ -1,0 +1,29 @@
+{
+    "name": "auth-example",
+    "version": "1.0.0",
+    "description": "express app authorization using JWT",
+    "main": "server.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "nodemon server"
+    },
+    "keywords": [
+        "express",
+        "node",
+        "auth",
+        "jwt"
+    ],
+    "author": "Ravindra Nag",
+    "license": "ISC",
+    "dependencies": {
+        "bcrypt": "^5.0.1",
+        "dotenv": "^16.0.1",
+        "express": "^4.18.1",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.3.5"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.16"
+    }
+}
