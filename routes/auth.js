@@ -85,7 +85,7 @@ authRouter.get('/info', getCurrentUser, (req, res, next) => {
 
 authRouter.get('/users', async (req, res, next) => {
 	try {
-		const allUsers = await User.find()
+		const allUsers = await User.find().select('email about')
 		res.json({
 			count: allUsers.length,
 			users: allUsers
