@@ -7,16 +7,6 @@ import authRouter from './routes/auth.js'
 
 dotenv.config()
 
-// connect to db
-main().catch(err => console.log(err));
-
-async function main() {
-    // const un = process.env.MONGODB_USERNAME
-    // console.log(un)
-    await mongoose.connect(process.env.MONGODB_URI)
-    console.log('db connected ✅')
-}
-
 const port = 8000
 
 const app = express()
@@ -37,6 +27,25 @@ app.use('/auth', authRouter)
 //     })
 // })
 
-app.listen(port, () => {
-    console.log('listening on port', port)
-})
+
+
+async function main() {
+	// const un = process.env.MONGODB_USERNAME
+	// console.log(un)
+	return mongoose.connect(process.env.MONGODB_URI)
+		.then(success => {
+			app.listen(port, (err) => {
+				if(err) {
+					console.log({
+						error: err
+					})
+				}
+				else{
+					console.log('db connected ✅')
+					console.log('listening on port', port, '🚀')
+				}
+			})
+		})
+}
+
+main().catch(err => console.log(err));

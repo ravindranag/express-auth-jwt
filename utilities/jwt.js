@@ -1,14 +1,15 @@
 // const jwt = require('jsonwebtoken')
 import jwt from 'jsonwebtoken'
 import User from '../models/user.js'
+import 'dotenv/config'
 
-const secret = 'huehue'
+const secret = process.env.JWT_SECRET
 
-const generateToken = (name) => {
+const generateToken = (email) => {
     const token = jwt.sign({
-        name: name
+        email: email
     }, secret, {
-        expiresIn: 60 * 60
+        expiresIn: '1d'
     })
     return token
 }
@@ -21,7 +22,7 @@ const getCurrentUser = (req, res, next) => {
             res.json({ error: err })
         } else {
             console.log(result)
-            const user = await User.findOne({ name: result.name }).select('name about')
+            const user = await User.findOne({ email: result.email }).select('email about')
             console.log(user)
             req.user = user
             next()

@@ -8,17 +8,36 @@ import bcrypt from 'bcrypt'
 
 const authRouter = express.Router()
 
+const checkDuplicate = async (req, res, next) => {
+	const { email } = req.body
+	try {
+		const user = await User.exists({
+			email
+		})
+		if(user) {
+			res.status(400).json({
+				error: 'Cannot create user',
+				message: 'User already exists'
+			})
+		} else next()
+	}
+	catch(err) {
+		console.log('error', err)
+	}
+}
 
 
 authRouter.post('/login', async(req, res, next) => {
-    const { name, password } = req.body
-    User.findOne({ name: name })
+    const { email, password } = req.body
+    User.findOne({ email: email })
         .then(user => {
+						if(user)
             return bcrypt.compare(password, user.password)
+						else throw new Error('User does not exist')
         })
         .then(isCorrectPassword => {
             if (isCorrectPassword) {
-                const token = generateToken(name)
+                const token = generateToken(email)
                 res.json({
                     message: 'Login successful',
                     token: token
@@ -36,7 +55,7 @@ authRouter.post('/login', async(req, res, next) => {
         })
 })
 
-authRouter.post('/signup', (req, res, next) => {
+authRouter.post('/signup', checkDuplicate, (req, res, next) => {
     const newUser = new User(req.body)
     console.log(newUser)
     newUser.save()
@@ -48,7 +67,8 @@ authRouter.post('/signup', (req, res, next) => {
         })
         .catch(err => {
             res.json({
-                error: err.message
+                error: 'Failed to create new user',
+								message: err.message
             })
         })
 
@@ -61,6 +81,23 @@ authRouter.get('/info', getCurrentUser, (req, res, next) => {
             user: req.user
         })
     }
+})
+
+authRouter.get('/users', async (req, res, next) => {
+	try {
+		const allUsers = await User.find()
+		res.json({
+			count: allUsers.length,
+			users: allUsers
+		})
+	}
+	catch(err) {
+		console.log(err)
+		res.status(400).json({
+			error: err.message,
+			message: 'Cannot get all users'
+		})
+	}
 })
 
 // module.exports = authRouter
