@@ -4,6 +4,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import authRouter from './routes/auth.js'
+import cors from 'cors'
 
 dotenv.config()
 
@@ -12,6 +13,7 @@ const port = process.env.PORT || 8000
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 app.get('/', (req, res, next) => {
     res.status(200).json({
